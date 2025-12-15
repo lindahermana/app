@@ -100,6 +100,7 @@ class PurchaseManager: ObservableObject {
         }
     }
     
+    @MainActor
     func restorePurchases() async {
         do {
             try await AppStore.sync()

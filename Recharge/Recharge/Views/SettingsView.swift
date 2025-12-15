@@ -99,7 +99,11 @@ struct SettingsView: View {
                         }
                     }
                     
-                    Button(action: { }) {
+                    Button(action: {
+                        Task {
+                            await purchaseManager.restorePurchases()
+                        }
+                    }) {
                         HStack {
                             Image(systemName: "arrow.clockwise")
                                 .foregroundColor(.blue)

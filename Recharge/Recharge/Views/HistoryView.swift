@@ -4,7 +4,9 @@
 //
 
 import SwiftUI
+#if canImport(Charts)
 import Charts
+#endif
 
 struct HistoryView: View {
     @EnvironmentObject var viewModel: BatteryViewModel
@@ -69,31 +71,10 @@ struct ChartSection: View {
                 .font(.headline)
             
             if #available(iOS 16.0, *) {
-                Chart(chartData, id: \.date) { item in
-                    LineMark(
-                        x: .value("Date", item.date),
-                        y: .value("Level", item.level)
-                    )
-                    .foregroundStyle(Color.purple.gradient)
-                    .interpolationMethod(.catmullRom)
-                    
-                    AreaMark(
-                        x: .value("Date", item.date),
-                        y: .value("Level", item.level)
-                    )
-                    .foregroundStyle(Color.purple.opacity(0.1).gradient)
-                    .interpolationMethod(.catmullRom)
-                }
-                .chartYScale(domain: 0...100)
-                .chartYAxis {
-                    AxisMarks(values: [0, 25, 50, 75, 100])
-                }
-                .frame(height: 200)
+                iOS16ChartView(chartData: chartData)
             } else {
-                // Fallback for iOS 15
-                Text("Upgrade to iOS 16 for charts")
-                    .foregroundColor(.secondary)
-                    .frame(height: 200)
+                // iOS 15 fallback - simple bar visualization
+                SimpleChartFallback(chartData: chartData)
             }
         }
         .padding()
@@ -283,6 +264,81 @@ struct PremiumUpgradeCard: View {
             )
         )
         .cornerRadius(20)
+    }
+}
+
+// MARK: - iOS 16+ Chart View
+@available(iOS 16.0, *)
+struct iOS16ChartView: View {
+    let chartData: [(date: Date, level: Int)]
+    
+    var body: some View {
+        Chart(chartData, id: \.0) { item in
+            LineMark(
+                x: .value("Date", item.date),
+                y: .value("Level", item.level)
+            )
+            .foregroundStyle(Color.purple.gradient)
+            .interpolationMethod(.catmullRom)
+            
+            AreaMark(
+                x: .value("Date", item.date),
+                y: .value("Level", item.level)
+            )
+            .foregroundStyle(Color.purple.opacity(0.1).gradient)
+            .interpolationMethod(.catmullRom)
+        }
+        .chartYScale(domain: 0...100)
+        .chartYAxis {
+            AxisMarks(values: [0, 25, 50, 75, 100])
+        }
+        .frame(height: 200)
+    }
+}
+
+// MARK: - iOS 15 Simple Chart Fallback
+struct SimpleChartFallback: View {
+    let chartData: [(date: Date, level: Int)]
+    
+    var body: some View {
+        VStack(spacing: 8) {
+            // Simple bar chart for iOS 15
+            HStack(alignment: .bottom, spacing: 4) {
+                ForEach(chartData.suffix(7), id: \.date) { item in
+                    VStack(spacing: 2) {
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(barColor(for: item.level))
+                            .frame(width: 30, height: CGFloat(item.level) * 1.5)
+                        
+                        Text(dayLabel(for: item.date))
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    }
+                }
+            }
+            .frame(height: 180)
+            .frame(maxWidth: .infinity)
+            
+            Text("Last 7 days")
+                .font(.caption)
+                .foregroundColor(.secondary)
+        }
+    }
+    
+    func barColor(for level: Int) -> Color {
+        switch level {
+        case 0..<20: return .red
+        case 20..<40: return .orange
+        case 40..<60: return .yellow
+        case 60..<80: return .green
+        default: return .purple
+        }
+    }
+    
+    func dayLabel(for date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "E"
+        return String(formatter.string(from: date).prefix(1))
     }
 }
 

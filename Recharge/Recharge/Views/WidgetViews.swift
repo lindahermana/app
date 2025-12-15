@@ -131,7 +131,8 @@ struct MediumWidgetView: View {
     }
 }
 
-// MARK: - Lock Screen Widget View
+// MARK: - Lock Screen Widget View (iOS 16+)
+@available(iOS 16.0, *)
 struct LockScreenWidgetView: View {
     let entry: BatteryWidgetEntry
     
@@ -145,7 +146,8 @@ struct LockScreenWidgetView: View {
     }
 }
 
-// MARK: - Inline Lock Screen Widget
+// MARK: - Inline Lock Screen Widget (iOS 16+)
+@available(iOS 16.0, *)
 struct InlineLockScreenWidgetView: View {
     let entry: BatteryWidgetEntry
     

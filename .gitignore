@@ -27,7 +27,7 @@ playground.xcworkspace
 Packages/
 Package.pins
 Package.resolved
-*.xcodeproj
+# Note: Keep .xcodeproj files in repo for project configuration
 #
 # Xcode automatically generates this directory with a hierarchical directory structure
 # that contains the projects, groups, and files you see in the Project Navigator.

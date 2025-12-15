@@ -155,12 +155,12 @@ App-specific:
 
 - **Language**: Swift 5.9+
 - **Framework**: SwiftUI
-- **Minimum iOS**: 15.0
+- **Minimum iOS**: 15.0 (Charts and Lock Screen widgets require iOS 16+)
 - **Architecture**: MVVM
 - **Data Storage**: UserDefaults (Core Data for future)
 - **In-App Purchases**: StoreKit 2
 - **Analytics**: TelemetryDeck (privacy-focused)
-- **Charts**: Swift Charts (iOS 16+)
+- **Charts**: Swift Charts (iOS 16+, fallback bar chart for iOS 15)
 
 ---
 
